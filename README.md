@@ -1,6 +1,6 @@
 # Windows Config Tools
 
-## Install Dev Tools
+## Install Dev Tools etc.
 
     Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/InstallTools.ps1").Content
 
