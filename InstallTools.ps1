@@ -16,6 +16,7 @@ winget install git.git github.cli junegunn.fzf burntsushi.ripgrep.msvc waterlan.
 
 # AI
 winget install sst.opencode
+winget install warp.warp
 # winget install elementlabs.lmstudio
 # winget install badboysm890.clara
 # winget install ollama.ollama
@@ -44,3 +45,4 @@ winget install rustlang.rustup
 
 # NodeJS
 winget install openjs.nodejs.lts
+
