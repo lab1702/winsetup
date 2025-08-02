@@ -16,7 +16,6 @@ winget install `
   sst.opencode `
   warp.warp `
   rproject.r `
-  posit.rstudio `
   posit.quarto `
   johnmacfarlane.pandoc `
   microsoft.visualstudio.2022.buildtools `
@@ -27,5 +26,6 @@ winget install `
   golang.go `
   rustlang.rustup `
   openjs.nodejs.lts
+
 
 
