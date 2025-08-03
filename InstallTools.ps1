@@ -21,7 +21,6 @@ winget install jqlang.jq
 
 # AI
 winget install sst.opencode
-winget install warp.warp
 
 # R
 winget install rproject.r
@@ -47,3 +46,4 @@ winget install rustlang.rustup
 
 # NodeJS
 winget install openjs.nodejs.lts
+
