@@ -17,3 +17,10 @@ This has to be re-run every time a new icon (and sometimes a new version) appear
 ## Reset Windows Terminal
 
     Remove-Item "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Force
+
+## NPM
+
+    mkdir ~/.npm-global
+    npm config set prefix '~/.npm-global'
+
+Then add to path.
