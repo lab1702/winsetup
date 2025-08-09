@@ -4,7 +4,7 @@
 
     Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/InstallTools.ps1").Content
 
-## Install Claude Code
+## Install / Update Claude Code
 
     irm https://claude.ai/install.ps1 | iex
 
