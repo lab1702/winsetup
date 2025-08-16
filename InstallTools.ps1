@@ -1,6 +1,5 @@
 
 # Base
-winget install devcom.jetbrainsmononerdfont
 winget install microsoft.visualstudiocode
 winget install helix.helix
 winget install neovim.neovim
@@ -33,7 +32,6 @@ winget install microsoft.visualstudio.2022.buildtools
 # Python
 winget install python.python.3.13
 winget install astral-sh.uv
-winget install astral-sh.ruff
 
 # DuckDB
 winget install duckdb.cli
@@ -46,4 +44,5 @@ winget install rustlang.rustup
 
 # NodeJS
 winget install openjs.nodejs.lts
+
 
