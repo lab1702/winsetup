@@ -8,7 +8,7 @@ winget install mega.megasync
 winget install autohotkey.autohotkey
 
 # Steam
-winget install valve.steam
+# winget install valve.steam
 
 # Dev
 winget install git.git
@@ -19,7 +19,7 @@ winget install waterlan.dos2unix
 winget install jqlang.jq
 
 # AI
-winget install sst.opencode
+# winget install sst.opencode
 
 # R
 winget install rproject.r
@@ -44,5 +44,3 @@ winget install rustlang.rustup
 
 # NodeJS
 winget install openjs.nodejs.lts
-
-
