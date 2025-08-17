@@ -1,12 +1,12 @@
 
 # Base
-winget install microsoft.visualstudiocode
-winget install helix.helix
 winget install discord.discord
 winget install mega.megasync
 winget install autohotkey.autohotkey
+winget install valve.steam
 
 # Dev
+winget install microsoft.visualstudiocode
 winget install git.git
 winget install github.cli
 winget install junegunn.fzf
@@ -37,3 +37,4 @@ winget install golang.go
 
 # Rust
 winget install rustlang.rustup
+
