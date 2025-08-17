@@ -22,12 +22,12 @@
 
     claude mcp add playwright npx @playwright/mcp@latest
 
-## Step 4: Always Show All System Tray Icons
+## Optional: Always Show All System Tray Icons
 
 This has to be re-run every time a new icon (and sometimes a new version) appears. Come on Microsoft, bring back the Always Show All Icons option.
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/ShowTrayIcons.ps1 | iex
 
-## As Needed: Reset Windows Terminal Settings
+## Optional: Reset Windows Terminal Settings
 
     Remove-Item "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Force
