@@ -2,7 +2,7 @@
 
 ## Install Dev Tools etc.
 
-    Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/InstallTools.ps1").Content
+    irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/InstallTools.ps1 | iex
 
 ## Install / Update Claude Code
 
@@ -12,7 +12,7 @@
 
 This has to be re-run every time a new icon (and sometimes a new version) appears. Come on Microsoft, bring back the Always Show All Icons option.
 
-    Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/ShowTrayIcons.ps1").Content
+    irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/ShowTrayIcons.ps1 | iex
 
 ## Reset Windows Terminal
 
