@@ -1,4 +1,7 @@
 
+# Updates
+winget update --all
+
 # Base
 winget install discord.discord
 winget install mega.megasync
@@ -37,4 +40,5 @@ winget install golang.go
 
 # Rust
 winget install rustlang.rustup
+
 
