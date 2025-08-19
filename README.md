@@ -30,4 +30,6 @@ This has to be re-run every time a new icon (and sometimes a new version) appear
 
 ## Optional: Reset Windows Terminal Settings
 
+Reset color schemes, sessions etc.
+
     Remove-Item "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Force
