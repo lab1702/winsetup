@@ -111,11 +111,14 @@ $packages = @{
 }
 
 # Updates
-if ($PSCmdlet.ShouldProcess("all packages", "Update")) {
+if ($PSCmdlet -and $PSCmdlet.ShouldProcess("all packages", "Update")) {
     Write-Host "Running updates..." -ForegroundColor Magenta
     winget update --all
-} else {
+} elseif ($WhatIfPreference) {
     Write-Host "What if: Would update all packages" -ForegroundColor Cyan
+} else {
+    Write-Host "Running updates..." -ForegroundColor Magenta
+    winget update --all
 }
 
 # Get list of all installed packages
@@ -137,11 +140,14 @@ foreach ($category in $packages.Keys) {
     
     if ($toInstall.Count -gt 0) {
         foreach ($packageId in $toInstall) {
-            if ($PSCmdlet.ShouldProcess($packageId, "Install package")) {
+            if ($PSCmdlet -and $PSCmdlet.ShouldProcess($packageId, "Install package")) {
                 Write-Host "  - Installing $packageId..." -ForegroundColor Yellow
                 winget install $packageId --accept-package-agreements --accept-source-agreements
-            } else {
+            } elseif ($WhatIfPreference) {
                 Write-Host "  What if: Would install $packageId" -ForegroundColor Cyan
+            } else {
+                Write-Host "  - Installing $packageId..." -ForegroundColor Yellow
+                winget install $packageId --accept-package-agreements --accept-source-agreements
             }
         }
     }
