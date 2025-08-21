@@ -10,6 +10,10 @@
 
     irm https://claude.ai/install.ps1 | iex
 
+And add it to the path:
+
+    [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Users\lab17\.local\bin", "User")
+
 ## Optional: Always Show All System Tray Icons
 
 This has to be re-run every time a new icon (and sometimes a new version) appears. Come on Microsoft, bring back the Always Show All Icons option.
