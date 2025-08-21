@@ -1,44 +1,72 @@
 
+# Define all packages to install
+$packages = @{
+    "Base Applications" = @(
+        "microsoft.visualstudiocode",
+        "discord.discord",
+        "autohotkey.autohotkey"
+    )
+    "Development CLI Tools" = @(
+        "git.git",
+        "github.cli",
+        "junegunn.fzf",
+        "burntsushi.ripgrep.msvc",
+        "waterlan.dos2unix",
+        "jqlang.jq"
+    )
+    "C/C++ Tools" = @(
+        "microsoft.visualstudio.2022.buildtools"
+    )
+    "R Tools" = @(
+        "rproject.r",
+        "posit.quarto",
+        "johnmacfarlane.pandoc"
+    )
+    "Python Tools" = @(
+        "python.python.3.13",
+        "astral-sh.uv"
+    )
+    "DuckDB Tools" = @(
+        "duckdb.cli"
+    )
+    "NodeJS Tools" = @(
+        "openjs.nodejs.lts"
+    )
+    "Go Tools" = @(
+        "golang.go"
+    )
+    "Rust Tools" = @(
+        "rustlang.rustup"
+    )
+}
+
 # Updates
+Write-Host "Running updates..." -ForegroundColor Magenta
 winget update --all
 
-# Base
-winget install discord.discord
-winget install mega.megasync
-winget install autohotkey.autohotkey
-winget install valve.steam
+# Get list of all installed packages
+Write-Host "`nChecking installed packages..." -ForegroundColor Cyan
+$installedPackages = winget list --accept-source-agreements | Out-String
 
-# Dev
-winget install microsoft.visualstudiocode
-winget install git.git
-winget install github.cli
-winget install junegunn.fzf
-winget install burntsushi.ripgrep.msvc
-winget install waterlan.dos2unix
-winget install jqlang.jq
-
-# C/C++
-winget install microsoft.visualstudio.2022.buildtools
-
-# R
-winget install rproject.r
-winget install posit.quarto
-winget install johnmacfarlane.pandoc
-
-# Python
-winget install python.python.3.13
-winget install astral-sh.uv
-
-# DuckDB
-winget install duckdb.cli
-
-# NodeJS
-winget install openjs.nodejs.lts
-
-# Go
-winget install golang.go
-
-# Rust
-winget install rustlang.rustup
+# Install missing packages
+foreach ($category in $packages.Keys) {
+    Write-Host "`n=== Installing $category ===" -ForegroundColor Blue
+    
+    $toInstall = @()
+    foreach ($packageId in $packages[$category]) {
+        if ($installedPackages -match [regex]::Escape($packageId)) {
+            Write-Host "  [OK] $packageId is already installed" -ForegroundColor Green
+        } else {
+            $toInstall += $packageId
+        }
+    }
+    
+    if ($toInstall.Count -gt 0) {
+        foreach ($packageId in $toInstall) {
+            Write-Host "  - Installing $packageId..." -ForegroundColor Yellow
+            winget install $packageId --accept-package-agreements --accept-source-agreements
+        }
+    }
+}
 
 
