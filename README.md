@@ -2,9 +2,9 @@
 
 **This is focused around C, C++, R, Python, DuckDB, NodeJS, Go and Rust using Claude Code AI Coding Agent.**
 
-## Step 1: Run Setup Script
+## Step 1: Run Install Script
 
-    irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/setup.ps1 | iex
+    irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
 
 ## Step 2: Install Claude Code
 
