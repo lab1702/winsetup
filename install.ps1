@@ -41,7 +41,7 @@
     
     The script installs the following categories of tools:
     - Base Applications: VS Code, Discord, AutoHotkey
-    - Development CLI Tools: Neovim, Helix, Git, GitHub CLI, fzf, ripgrep, dos2unix, jq
+    - Development CLI Tools: Git, GitHub CLI, fzf, ripgrep, dos2unix, jq
     - C/C++ Tools: Visual Studio 2022 Build Tools
     - R Tools: R, Quarto, Pandoc
     - Python Tools: Python 3.13, uv, ruff
@@ -74,8 +74,6 @@ $packages = @{
         "autohotkey.autohotkey"
     )
     "Development CLI Tools" = @(
-        "neovim.neovim",
-        "helix.helix",
         "git.git",
         "github.cli",
         "junegunn.fzf",
