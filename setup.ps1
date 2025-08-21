@@ -7,6 +7,8 @@ $packages = @{
         "autohotkey.autohotkey"
     )
     "Development CLI Tools" = @(
+        "neovim.neovim",
+        "helix.helix",
         "git.git",
         "github.cli",
         "junegunn.fzf",
@@ -24,7 +26,8 @@ $packages = @{
     )
     "Python Tools" = @(
         "python.python.3.13",
-        "astral-sh.uv"
+        "astral-sh.uv",
+        "astral-sh.ruff"
     )
     "DuckDB Tools" = @(
         "duckdb.cli"
