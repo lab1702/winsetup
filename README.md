@@ -6,7 +6,7 @@
 
 ## Step 1: Run Setup Script
 
-    irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/InstallTools.ps1 | iex
+    irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/setup.ps1 | iex
 
 ## Step 2: Install Claude Code
 
