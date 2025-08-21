@@ -2,8 +2,6 @@
 
 **This is focused around C, C++, R, Python, DuckDB, NodeJS, Go and Rust using Claude Code AI Coding Agent.**
 
-*My setup emphasizes simplicity and minimalism. There is nothing that affects themes and looks here.*
-
 ## Step 1: Run Setup Script
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/setup.ps1 | iex
