@@ -12,7 +12,15 @@
 
 And add it to the path:
 
-    [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Users\lab17\.local\bin", "User")
+    $newPath = "$env:USERPROFILE\.local\bin"
+    $pathArray = $env:PATH -split ';'
+    
+    if ($newPath -notin $pathArray) {
+        [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$newPath", "User")
+        Write-Host "Added $newPath to PATH"
+    } else {
+        Write-Host "$newPath already exists in PATH"
+    }
 
 ## Optional: Always Show All System Tray Icons
 
