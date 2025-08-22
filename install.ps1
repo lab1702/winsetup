@@ -68,12 +68,8 @@ if ($WhatIfPreference) {
 
 # Define all packages to install
 $packages = @{
-    "Base Applications" = @(
+    "Development Tools" = @(
         "microsoft.visualstudiocode",
-        "discord.discord",
-        "autohotkey.autohotkey"
-    )
-    "Development CLI Tools" = @(
         "git.git",
         "github.cli",
         "junegunn.fzf",
