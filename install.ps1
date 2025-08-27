@@ -75,7 +75,8 @@ $packages = @{
         "junegunn.fzf",
         "burntsushi.ripgrep.msvc",
         "waterlan.dos2unix",
-        "jqlang.jq"
+        "jqlang.jq",
+        "aristocratos.btop4win"
     )
     "C/C++ Tools" = @(
         "microsoft.visualstudio.2022.buildtools"
