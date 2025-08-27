@@ -68,6 +68,7 @@ if ($WhatIfPreference) {
 # Define all packages to install
 $packages = @{
     "Development Tools" = @(
+        "microsoft.sysinternals.suite",
         "devcom.jetbrainsmononerdfont",
         "microsoft.visualstudiocode",
         "git.git",
