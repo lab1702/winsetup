@@ -68,6 +68,7 @@ if ($WhatIfPreference) {
 # Define all packages to install
 $packages = @{
     "Development Tools" = @(
+        "devcom.jetbrainsmononerdfont",
         "microsoft.visualstudiocode",
         "git.git",
         "github.cli",
