@@ -22,6 +22,10 @@ And add it to the path:
         Write-Host "$newPath already exists in PATH"
     }
 
+## Optional: Install Playwright MCP
+
+    claude mcp add playwright npx @playwright/mcp@latest
+
 ## Optional: Always Show All System Tray Icons
 
 This has to be re-run every time a new icon (and sometimes a new version) appears. Come on Microsoft, bring back the Always Show All Icons option.
