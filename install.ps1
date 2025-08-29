@@ -71,6 +71,8 @@ $packages = @{
         "microsoft.sysinternals.suite",
         "devcom.jetbrainsmononerdfont",
         "microsoft.visualstudiocode",
+        "neovim.neovim",
+        "helix.helix",
         "git.git",
         "github.cli",
         "junegunn.fzf",
