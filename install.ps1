@@ -75,6 +75,7 @@ $packages = @{
         "helix.helix",
         "git.git",
         "github.cli",
+        "sxyazi.yazi",
         "junegunn.fzf",
         "burntsushi.ripgrep.msvc",
         "waterlan.dos2unix",
