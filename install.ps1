@@ -93,7 +93,8 @@ $packages = @{
     "Python Tools" = @(
         "python.python.3.13",
         "astral-sh.uv",
-        "astral-sh.ruff"
+        "astral-sh.ruff",
+        "astral-sh.ty"
     )
     "DuckDB Tools" = @(
         "duckdb.cli"
