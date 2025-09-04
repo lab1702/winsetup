@@ -1,12 +1,12 @@
 # Simple Windows Developer Workstation Setup
 
-**This is focused around C, C++, R, Python, DuckDB, NodeJS, Go and Rust using Claude Code AI Coding Agent.**
+**This is focused around C, C++, R, Python, DuckDB, NodeJS, Go and Rust using Warp Terminal AI Agent.**
 
 ## Step 1: Run Install Script
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
 
-## Step 2: Install Claude Code
+## Optional: Install Claude Code
 
     irm https://claude.ai/install.ps1 | iex
 
@@ -21,10 +21,6 @@ And add it to the path:
     } else {
         Write-Host "$newPath already exists in PATH"
     }
-
-## Optional: Install Playwright MCP
-
-    claude mcp add playwright npx @playwright/mcp@latest
 
 ## Optional: Always Show All System Tray Icons
 
