@@ -68,19 +68,14 @@ if ($WhatIfPreference) {
 # Define all packages to install
 $packages = @{
     "Development Tools" = @(
-        "microsoft.sysinternals.suite",
-        "devcom.jetbrainsmononerdfont",
+        "warp.warp",
         "microsoft.visualstudiocode",
-        "neovim.neovim",
-        "helix.helix",
         "git.git",
         "github.cli",
-        "sxyazi.yazi",
         "junegunn.fzf",
         "burntsushi.ripgrep.msvc",
         "waterlan.dos2unix",
-        "jqlang.jq",
-        "warp.warp"
+        "jqlang.jq"
     )
     "C/C++ Tools" = @(
         "microsoft.visualstudio.2022.buildtools"
