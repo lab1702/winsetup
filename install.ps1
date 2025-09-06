@@ -70,6 +70,8 @@ $packages = @{
     "Development Tools" = @(
         "warp.warp",
         "microsoft.visualstudiocode",
+        "neovim.neovim",
+        "helix.helix",
         "git.git",
         "github.cli",
         "junegunn.fzf",
