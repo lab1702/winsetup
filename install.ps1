@@ -68,7 +68,6 @@ if ($WhatIfPreference) {
 # Define all packages to install
 $packages = @{
     "Development Tools" = @(
-        "warp.warp",
         "microsoft.visualstudiocode",
         "neovim.neovim",
         "helix.helix",
@@ -105,6 +104,9 @@ $packages = @{
     )
     "Rust Tools" = @(
         "rustlang.rustup"
+    )
+    "Zig Tools" = @(
+        "zig.zig"
     )
 }
 
