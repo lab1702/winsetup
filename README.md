@@ -10,6 +10,18 @@
 
     irm https://claude.ai/install.ps1 | iex
 
+Add it to path:
+
+    $newPath = "$env:USERPROFILE\.local\bin"
+    $pathArray = $env:PATH -split ';'
+    
+    if ($newPath -notin $pathArray) {
+        [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$newPath", "User")
+        Write-Host "Added $newPath to PATH"
+    } else {
+        Write-Host "$newPath already exists in PATH"
+    }
+
 ## Optional: Always Show All System Tray Icons
 
 This has to be re-run every time a new icon (and sometimes a new version) appears. Come on Microsoft, bring back the Always Show All Icons option.
