@@ -1,10 +1,14 @@
 # Simple Windows Developer Workstation Setup
 
-**This is focused around C, C++, R, Python, DuckDB, NodeJS, Go and Rust using Warp Terminal AI Agent.**
+**This is focused around C, C++, R, Python, DuckDB, NodeJS, Go, Rust and Zig.**
 
 ## Step 1: Run Install Script
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
+
+## Optional: Install Claude Code
+
+    irm https://claude.ai/install.ps1 | iex
 
 ## Optional: Always Show All System Tray Icons
 
