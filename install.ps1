@@ -86,7 +86,6 @@ $packages = @{
         "rproject.r",
         "rproject.rtools",
         "posit.quarto",
-        "posit.positron",
         "johnmacfarlane.pandoc"
     )
     "Python Tools" = @(
