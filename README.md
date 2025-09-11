@@ -6,21 +6,9 @@
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
 
-## Optional: Install Claude Code
+## Optional: Install OpenAI Codex CLI
 
-    irm https://claude.ai/install.ps1 | iex
-
-Add it to path:
-
-    $newPath = "$env:USERPROFILE\.local\bin"
-    $pathArray = $env:PATH -split ';'
-    
-    if ($newPath -notin $pathArray) {
-        [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$newPath", "User")
-        Write-Host "Added $newPath to PATH"
-    } else {
-        Write-Host "$newPath already exists in PATH"
-    }
+    npm install -g @openai/codex
 
 ## Optional: Always Show All System Tray Icons
 
