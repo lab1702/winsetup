@@ -72,6 +72,7 @@ $packages = @{
         "neovim.neovim",
         "helix.helix",
         "warp.warp",
+        "devcom.jetbrainsmononerdfont",
         "git.git",
         "github.cli",
         "junegunn.fzf",
