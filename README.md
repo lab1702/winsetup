@@ -6,6 +6,10 @@
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
 
+## Optional: Install Copilot CLI
+
+    npm install -g @github/copilot
+
 ## Optional: Install Claude Code
 
     irm https://claude.ai/install.ps1 | iex
