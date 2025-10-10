@@ -92,7 +92,7 @@ $packages = @{
         "johnmacfarlane.pandoc"
     )
     "Python Tools" = @(
-        "python.python.3.13",
+        "python.python.3.14",
         "astral-sh.uv",
         "astral-sh.ruff",
         "astral-sh.ty"
