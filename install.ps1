@@ -71,6 +71,7 @@ $packages = @{
         "microsoft.visualstudiocode",
         "neovim.neovim",
         "helix.helix",
+        "microsoft.edit",
         "warp.warp",
         "devcom.jetbrainsmononerdfont",
         "git.git",
