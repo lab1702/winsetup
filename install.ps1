@@ -159,7 +159,12 @@ foreach ($category in $packages.Keys) {
 }
 
 # Install/update GitHub Copilot CLI
+Write-Host "Installing/Updating GitHub Copilot CLI..." -ForegroundColor Yellow
 npm install -g @github/copilot
 
 # Show all tray icons
+Write-Host "Configuring all tray icons to be visible..." -ForegroundColor Yellow
 Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
+
+# End
+Write-Host "All done!" -ForegroundColor Green
