@@ -72,7 +72,6 @@ $packages = @{
         "neovim.neovim",
         "helix.helix",
         "microsoft.edit",
-        "warp.warp",
         "devcom.jetbrainsmononerdfont",
         "git.git",
         "github.cli",
