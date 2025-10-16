@@ -6,22 +6,6 @@
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
 
-## Optional: Install Copilot CLI
-
-    npm install -g @github/copilot
-
-## Optional: Install Claude Code
-
-    irm https://claude.ai/install.ps1 | iex
-
-## Optional: Install Gemini CLI
-
-    npm install -g @google/gemini-cli
-
-## Optional: Install Codex CLI
-
-    npm install -g @openai/codex
-
 ## Optional: Always Show All System Tray Icons
 
 This has to be re-run every time a new icon (and sometimes a new version) appears. Come on Microsoft, bring back the Always Show All Icons option.
