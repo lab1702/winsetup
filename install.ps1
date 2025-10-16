@@ -160,3 +160,6 @@ foreach ($category in $packages.Keys) {
 
 # Install/update GitHub Copilot CLI
 npm install -g @github/copilot
+
+# Show all tray icons
+Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
