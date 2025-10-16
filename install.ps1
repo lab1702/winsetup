@@ -158,4 +158,5 @@ foreach ($category in $packages.Keys) {
     }
 }
 
-
+# Install/update GitHub Copilot CLI
+npm install -g @github/copilot
