@@ -165,6 +165,10 @@ npm install -g @github/copilot
 Write-Host "Installing/Updating Claude Code..." -ForegroundColor Yellow
 irm https://claude.ai/install.ps1 | iex
 
+# Install/update Codex
+Write-Host "Installing/Updating Codex..." -ForegroundColor Yellow
+npm i -g @openai/codex
+
 # Show all tray icons
 Write-Host "Configuring all tray icons to be visible..." -ForegroundColor Yellow
 Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
