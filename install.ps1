@@ -93,9 +93,7 @@ $packages = @{
     )
     "Python Tools" = @(
         "python.python.3.14",
-        "astral-sh.uv",
-        "astral-sh.ruff",
-        "astral-sh.ty"
+        "astral-sh.uv"
     )
     "DuckDB Tools" = @(
         "duckdb.cli"
@@ -163,11 +161,15 @@ npm install -g @github/copilot
 
 # Install/update Claude Code
 Write-Host "Installing/Updating Claude Code..." -ForegroundColor Yellow
-irm https://claude.ai/install.ps1 | iex
+npm install -g @anthropic-ai/claude-code
 
 # Install/update Codex
 Write-Host "Installing/Updating Codex..." -ForegroundColor Yellow
 npm i -g @openai/codex
+
+# Install/update Gemini CLI
+Write-Host "Installing/Updating Gemini CLI..." -ForegroundColor Yellow
+npm install -g @google/gemini-cli
 
 # Show all tray icons
 Write-Host "Configuring all tray icons to be visible..." -ForegroundColor Yellow
