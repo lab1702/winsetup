@@ -161,7 +161,7 @@ npm install -g @github/copilot
 
 # Install/update Claude Code
 Write-Host "Installing/Updating Claude Code..." -ForegroundColor Yellow
-npm install -g @anthropic-ai/claude-code
+irm https://claude.ai/install.ps1 | iex
 
 # Install/update Codex
 Write-Host "Installing/Updating Codex..." -ForegroundColor Yellow
