@@ -82,7 +82,7 @@ $packages = @{
         "autohotkey.autohotkey"
     )
     "C/C++ Tools" = @(
-        "microsoft.visualstudio.2022.buildtools"
+        "microsoft.visualstudio.buildtools"
     )
     "R Tools" = @(
         "rproject.r",
