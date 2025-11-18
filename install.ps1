@@ -113,17 +113,6 @@ $packages = @{
     )
 }
 
-# Updates
-if ($PSCmdlet -and $PSCmdlet.ShouldProcess("all packages", "Update")) {
-    Write-Host "Running updates..." -ForegroundColor Magenta
-    winget update --all
-} elseif ($WhatIfPreference) {
-    Write-Host "What if: Would update all packages" -ForegroundColor Cyan
-} else {
-    Write-Host "Running updates..." -ForegroundColor Magenta
-    winget update --all
-}
-
 # Get list of all installed packages
 Write-Host "`nChecking installed packages..." -ForegroundColor Cyan
 $installedPackages = winget list --accept-source-agreements | Out-String
