@@ -75,6 +75,7 @@ $packages = @{
         "devcom.jetbrainsmononerdfont",
         "git.git",
         "github.cli",
+        "kitware.cmake",
         "junegunn.fzf",
         "burntsushi.ripgrep.msvc",
         "waterlan.dos2unix",
