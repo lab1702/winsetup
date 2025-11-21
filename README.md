@@ -6,6 +6,10 @@
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
 
+## Optional: Install Claude Code
+
+    irm https://claude.ai/install.ps1 | iex
+
 ## Optional: Reset Windows Terminal Settings
 
 Reset color schemes, sessions etc.
