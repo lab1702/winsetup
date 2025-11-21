@@ -145,10 +145,6 @@ foreach ($category in $packages.Keys) {
     }
 }
 
-# Install/update Claude Code
-Write-Host "Installing/Updating Claude Code..." -ForegroundColor Yellow
-irm https://claude.ai/install.ps1 | iex
-
 # Show all tray icons
 Write-Host "Configuring all tray icons to be visible..." -ForegroundColor Yellow
 Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
