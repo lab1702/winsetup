@@ -69,6 +69,7 @@ if ($WhatIfPreference) {
 $packages = @{
     "Development Tools" = @(
         "microsoft.visualstudiocode",
+        "sst.opencode",
         "neovim.neovim",
         "helix.helix",
         "microsoft.edit",
