@@ -112,6 +112,10 @@ $packages = @{
     "Zig Tools" = @(
         "zig.zig"
     )
+    "Typst Tools" = @(
+        "typst.typst",
+        "myriad-dreamin.tinymist"
+    )
 }
 
 # Get list of all installed packages
