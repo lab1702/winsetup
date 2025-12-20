@@ -91,7 +91,9 @@ $packages = @{
         "rproject.rtools",
         "posit.quarto",
         "posit.rstudio",
-        "johnmacfarlane.pandoc"
+        "posit.positron",
+        "johnmacfarlane.pandoc",
+        "miktex.miktex"
     )
     "Python Tools" = @(
         "python.python.3.14",
