@@ -1,7 +1,5 @@
 # Simple Windows Developer Workstation Setup
 
-**This is focused around C, C++, R, Python, DuckDB, NodeJS, Go, Rust and Zig.**
-
 ## Step 1: Run Install/Update Script
 
     irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
