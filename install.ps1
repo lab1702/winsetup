@@ -69,9 +69,7 @@ if ($WhatIfPreference) {
 $packages = @{
     "Development Tools" = @(
         "microsoft.visualstudiocode",
-        "neovim.neovim",
         "helix.helix",
-        "microsoft.edit",
         "devcom.jetbrainsmononerdfont",
         "git.git",
         "github.cli",
