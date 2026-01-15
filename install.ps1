@@ -43,7 +43,7 @@
     - Development Tools: VS Code, Git, GitHub CLI, fzf, ripgrep, dos2unix, jq
     - C/C++ Tools: Visual Studio 2022 Build Tools
     - R Tools: R, Quarto, Pandoc
-    - Python Tools: Python 3.13, uv, ruff
+    - Python Tools: Python 3.14, uv, ruff
     - DuckDB Tools: DuckDB CLI
     - NodeJS Tools: Node.js LTS
     - Go Tools: Go programming language
@@ -93,7 +93,9 @@ $packages = @{
     )
     "Python Tools" = @(
         "python.python.3.14",
-        "astral-sh.uv"
+        "astral-sh.uv",
+        "astral-sh.ruff",
+        "astral-sh.ty"
     )
     "DuckDB Tools" = @(
         "duckdb.cli"
@@ -106,9 +108,6 @@ $packages = @{
     )
     "Rust Tools" = @(
         "rustlang.rustup"
-    )
-    "Zig Tools" = @(
-        "zig.zig"
     )
     "Typst Tools" = @(
         "typst.typst",
@@ -147,10 +146,6 @@ foreach ($category in $packages.Keys) {
         }
     }
 }
-
-# Show all tray icons
-Write-Host "Configuring all tray icons to be visible..." -ForegroundColor Yellow
-Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
 
 # End
 Write-Host "All done!" -ForegroundColor Green
