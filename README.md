@@ -8,6 +8,10 @@
 
     irm https://claude.ai/install.ps1 | iex
 
+## Optional: Configure All Tray Icons As Visible
+
+    Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
+
 ## Optional: Reset Windows Terminal Settings
 
 Reset color schemes, sessions etc.
