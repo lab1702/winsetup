@@ -10,7 +10,14 @@
 
 ### Add to PATH
 
-    [Environment]::SetEnvironmentVariable("PATH", "$([Environment]::GetEnvironmentVariable('PATH', 'User'));$env:USERPROFILE\.local\bin", "User")
+    $binPath = "$env:USERPROFILE\.local\bin"
+    $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+    if ($userPath -split ";" -notcontains $binPath) {
+        [Environment]::SetEnvironmentVariable("PATH", "$userPath;$binPath", "User")
+        Write-Host "Added $binPath to PATH"
+    } else {
+        Write-Host "$binPath is already in PATH"
+    }
 
 ## Optional: Configure All Tray Icons As Visible
 
