@@ -8,6 +8,10 @@
 
     irm https://claude.ai/install.ps1 | iex
 
+### Add to PATH
+
+    [Environment]::SetEnvironmentVariable("PATH", "$([Environment]::GetEnvironmentVariable('PATH', 'User'));C:\Users\lab17\.local\bin", "User")
+
 ## Optional: Configure All Tray Icons As Visible
 
     Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
