@@ -10,7 +10,7 @@
 
 ### Add to PATH
 
-    [Environment]::SetEnvironmentVariable("PATH", "$([Environment]::GetEnvironmentVariable('PATH', 'User'));C:\Users\lab17\.local\bin", "User")
+    [Environment]::SetEnvironmentVariable("PATH", "$([Environment]::GetEnvironmentVariable('PATH', 'User'));$env:USERPROFILE\.local\bin", "User")
 
 ## Optional: Configure All Tray Icons As Visible
 
