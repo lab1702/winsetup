@@ -19,6 +19,28 @@
         Write-Host "$binPath is already in PATH"
     }
 
+## Optional: Setup Git Authentication
+
+Step A:
+
+    git config --global user.name "abc"
+
+Step B:
+
+    git config --global user.email "abc@gmail.com"
+
+Step C:
+
+    gh auth login
+
+Step D:
+
+    gh auth setup-git
+
+Step E:
+
+    git config --global core.autocrlf input
+
 ## Optional: Configure All Tray Icons As Visible
 
     Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-Object {New-ItemProperty -Path $_.PSPath -Name 'IsPromoted' -Value '1' -PropertyType DWORD -Force }
