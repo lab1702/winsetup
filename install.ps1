@@ -91,7 +91,6 @@ $packages = @{
         "miktex.miktex"
     )
     "Python Tools" = @(
-        "python.python.3.14",
         "astral-sh.uv",
         "astral-sh.ruff",
         "astral-sh.ty"
