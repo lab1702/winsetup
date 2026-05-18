@@ -88,6 +88,12 @@ $packages = @{
         "johnmacfarlane.pandoc",
         "miktex.miktex"
     )
+    "Python Tools" = @(
+        "python.pythoninstallmanager",
+        "astral-sh.uv",
+        "astral-sh.ruff",
+        "astral-sh.ty"
+    )
     "DuckDB Tools" = @(
         "duckdb.cli"
     )
