@@ -69,7 +69,6 @@ if ($WhatIfPreference) {
 $packages = @{
     "Development Tools" = @(
         "microsoft.visualstudiocode",
-        "devcom.jetbrainsmononerdfont",
         "git.git",
         "github.cli",
         "kitware.cmake",
@@ -86,14 +85,8 @@ $packages = @{
         "rproject.r",
         "rproject.rtools",
         "posit.quarto",
-        "posit.rstudio",
         "johnmacfarlane.pandoc",
         "miktex.miktex"
-    )
-    "Python Tools" = @(
-        "astral-sh.uv",
-        "astral-sh.ruff",
-        "astral-sh.ty"
     )
     "DuckDB Tools" = @(
         "duckdb.cli"
@@ -108,8 +101,7 @@ $packages = @{
         "rustlang.rustup"
     )
     "Typst Tools" = @(
-        "typst.typst",
-        "myriad-dreamin.tinymist"
+        "typst.typst"
     )
 }
 
