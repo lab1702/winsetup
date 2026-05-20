@@ -143,5 +143,13 @@ foreach ($category in $packages.Keys) {
     }
 }
 
+# Prevent winget from managing Python versions since the python install manager does that
+winget pin add --id python.python.3.10 --blocking
+winget pin add --id python.python.3.11 --blocking
+winget pin add --id python.python.3.12 --blocking
+winget pin add --id python.python.3.13 --blocking
+winget pin add --id python.python.3.14 --blocking
+winget pin add --id python.python.3.15 --blocking
+
 # End
 Write-Host "All done!" -ForegroundColor Green
