@@ -36,10 +36,8 @@ Step C:
 Step D:
 
     gh auth setup-git
-
-Step E:
-
     git config --global core.autocrlf input
+    git config --global init.defaultBranch main
 
 ## Optional: Configure All Tray Icons As Visible
 
