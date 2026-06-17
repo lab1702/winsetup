@@ -89,10 +89,13 @@ $packages = @{
         "miktex.miktex"
     )
     "Python Tools" = @(
-        "python.pythoninstallmanager",
+        "9NQ7512CXL7T",
         "astral-sh.uv",
         "astral-sh.ruff",
         "astral-sh.ty"
+    )
+    "Julia Tools" = @(
+        "9NJNWW8PVKMN"
     )
     "DuckDB Tools" = @(
         "duckdb.cli"
