@@ -41,7 +41,7 @@
     
     The script installs the following categories of tools:
     - Development Tools: VS Code, Git, GitHub CLI, CMake, fzf, ripgrep, dos2unix, jq, AutoHotkey
-    - C/C++ Tools: Visual Studio 2022 Build Tools
+    - C/C++ Tools: Visual Studio Build Tools
     - R Tools: R, Rtools, Quarto, Pandoc, MiKTeX
     - Python Tools: Python, uv, ruff, ty
     - Julia Tools: Julia
