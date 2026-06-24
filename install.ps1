@@ -42,7 +42,7 @@
     The script installs the following categories of tools:
     - Development Tools: VS Code, Git, GitHub CLI, CMake, fzf, ripgrep, dos2unix, jq, AutoHotkey
     - C/C++ Tools: Visual Studio Build Tools
-    - R Tools: R, Rtools, Quarto, Pandoc, MiKTeX
+    - R Tools: R, Rtools, RStudio, Quarto, Pandoc, MiKTeX
     - Python Tools: Python, uv, ruff, ty
     - Julia Tools: Julia
     - DuckDB Tools: DuckDB CLI
@@ -87,6 +87,7 @@ $packages = @{
         "rproject.r",
         "rproject.rtools",
         "posit.quarto",
+        "posit.rstudio",
         "johnmacfarlane.pandoc",
         "miktex.miktex"
     )
