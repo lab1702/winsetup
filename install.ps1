@@ -69,8 +69,10 @@ if ($WhatIfPreference) {
 
 # Define all packages to install
 $packages = @{
-    "Development Tools" = @(
-        "microsoft.visualstudiocode",
+    "Editors" = @(
+        "microsoft.visualstudiocode"
+    )
+    "Command Line Tools" = @(
         "git.git",
         "github.cli",
         "kitware.cmake",
@@ -78,38 +80,43 @@ $packages = @{
         "burntsushi.ripgrep.msvc",
         "waterlan.dos2unix",
         "jqlang.jq",
+        "duckdb.cli"
+    )
+    "AI Tools" = @(
+        "anthropic.claude"
+    )
+    "System Tools" = @(
         "autohotkey.autohotkey"
     )
-    "C/C++ Tools" = @(
+    "C/C++ Language" = @(
         "microsoft.visualstudio.buildtools"
     )
-    "R Tools" = @(
+    "R Language" = @(
         "rproject.r",
         "rproject.rtools",
-        "posit.quarto",
-        "posit.rstudio",
-        "johnmacfarlane.pandoc",
-        "miktex.miktex"
+        "posit.rstudio"
     )
-    "Python Tools" = @(
+    "Python Language" = @(
         "9NQ7512CXL7T"
     )
-    "Julia Tools" = @(
+    "Julia Language" = @(
         "9NJNWW8PVKMN"
     )
-    "DuckDB Tools" = @(
-        "duckdb.cli"
+    "Markdown Tools" = @(
+        "johnmacfarlane.pandoc",
+        "posit.quarto"
     )
     "NodeJS Tools" = @(
         "openjs.nodejs.lts"
     )
-    "Go Tools" = @(
+    "Go Language" = @(
         "golang.go"
     )
-    "Rust Tools" = @(
+    "Rust Language" = @(
         "rustlang.rustup"
     )
-    "Typst Tools" = @(
+    "Typesetting Tools" = @(
+        "miktex.miktex",
         "typst.typst"
     )
 }
