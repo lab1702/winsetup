@@ -70,7 +70,9 @@ if ($WhatIfPreference) {
 # Define all packages to install
 $packages = @{
     "Editors" = @(
-        "microsoft.visualstudiocode"
+        "microsoft.visualstudiocode",
+        "neovim.neovim",
+        "helix.helix"
     )
     "Command Line Tools" = @(
         "git.git",
@@ -80,6 +82,7 @@ $packages = @{
         "burntsushi.ripgrep.msvc",
         "waterlan.dos2unix",
         "jqlang.jq",
+        "sqlite.sqlite",
         "duckdb.cli"
     )
     "AI Tools" = @(
