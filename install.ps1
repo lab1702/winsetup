@@ -92,10 +92,7 @@ $packages = @{
         "miktex.miktex"
     )
     "Python Tools" = @(
-        "9NQ7512CXL7T",
-        "astral-sh.uv",
-        "astral-sh.ruff",
-        "astral-sh.ty"
+        "9NQ7512CXL7T"
     )
     "Julia Tools" = @(
         "9NJNWW8PVKMN"
