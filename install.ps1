@@ -75,6 +75,7 @@ $packages = @{
         "helix.helix"
     )
     "Command Line Tools" = @(
+        "9MZ1SNWT0N5D",
         "microsoft.coreutils"
         "git.git",
         "github.cli",
