@@ -72,7 +72,8 @@ $packages = @{
     "Editors" = @(
         "microsoft.visualstudiocode",
         "neovim.neovim",
-        "helix.helix"
+        "helix.helix",
+        "thedocumentfoundation.libreoffice"
     )
     "Command Line Tools" = @(
         "microsoft.powershell",
