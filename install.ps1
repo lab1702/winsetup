@@ -88,9 +88,6 @@ $packages = @{
         "sqlite.sqlite",
         "duckdb.cli"
     )
-    "AI Tools" = @(
-        "anthropic.claude"
-    )
     "System Tools" = @(
         "autohotkey.autohotkey"
     )
