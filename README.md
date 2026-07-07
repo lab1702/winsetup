@@ -27,6 +27,11 @@
     claude plugin marketplace add DietrichGebert/ponytail
     claude plugin install ponytail@ponytail
 
+#### Optional: Update All Plugins
+
+    claude plugin marketplace update
+    (claude plugin list --json | ConvertFrom-Json) | ForEach-Object { claude plugin update $_.id }
+
 ## Optional: Setup Git Authentication
 
 Step A:
