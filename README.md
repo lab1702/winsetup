@@ -22,6 +22,7 @@
 ### Optional: Install Claude Code Plugins
 
     claude plugin install gopls-lsp@claude-plugins-official
+    claude plugin install pyright-lsp@claude-plugins-official
     claude plugin install superpowers@claude-plugins-official
     claude plugin install security-guidance@claude-plugins-official
     claude plugin marketplace add DietrichGebert/ponytail
