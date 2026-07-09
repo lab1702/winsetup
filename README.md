@@ -31,6 +31,10 @@
     claude plugin marketplace update
     (claude plugin list --json | ConvertFrom-Json) | ForEach-Object { claude plugin update $_.id }
 
+## Optional: Install Go Language Server
+
+    go install golang.org/x/tools/gopls@latest
+
 ## Optional: Setup Git Authentication
 
 Step A:
