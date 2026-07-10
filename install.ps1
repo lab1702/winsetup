@@ -71,8 +71,6 @@ if ($WhatIfPreference) {
 $packages = @{
     "Editors" = @(
         "microsoft.visualstudiocode",
-        "neovim.neovim",
-        "helix.helix",
         "thedocumentfoundation.libreoffice"
     )
     "Command Line Tools" = @(
