@@ -69,6 +69,9 @@ if ($WhatIfPreference) {
 
 # Define all packages to install
 $packages = @{
+    "AI Tools" = @(
+        "9PLM9XGG6VKS"
+    )
     "Editors" = @(
         "microsoft.visualstudiocode",
         "neovim.neovim",
