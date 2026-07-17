@@ -8,7 +8,7 @@
 
     irm https://claude.ai/install.ps1 | iex
 
-### Add Claude Code to PATH
+### Add Claude Code CLI to PATH
 
     $binPath = "$env:USERPROFILE\.local\bin"
     $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
