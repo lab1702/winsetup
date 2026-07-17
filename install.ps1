@@ -40,6 +40,7 @@
     Version: 1.2.0
     
     The script installs the following categories of tools:
+    - AI Tools: ChatGPT Desktop App, Claude Desktop App
     - Development Tools: VS Code, Git, GitHub CLI, CMake, fzf, ripgrep, dos2unix, jq, AutoHotkey
     - C/C++ Tools: Visual Studio Build Tools
     - R Tools: R, Rtools, RStudio, Quarto, Pandoc, MiKTeX
