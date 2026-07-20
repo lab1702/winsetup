@@ -161,5 +161,30 @@ foreach ($category in $packages.Keys) {
     }
 }
 
+# Alias for vi
+$aliasLine = 'Set-Alias -Name vi -Value nvim'
+
+# Resolve Documents folder (handles OneDrive folder redirection)
+$documents = [Environment]::GetFolderPath('MyDocuments')
+
+# Profile paths for Windows PowerShell 5.1 and PowerShell 7+
+$profilePaths = @(
+    (Join-Path $documents 'WindowsPowerShell\Microsoft.PowerShell_profile.ps1'),
+    (Join-Path $documents 'PowerShell\Microsoft.PowerShell_profile.ps1')
+)
+
+foreach ($profilePath in $profilePaths) {
+    # Create the profile file (and parent directory) if it doesn't exist
+    if (-not (Test-Path $profilePath)) {
+        New-Item -Path $profilePath -ItemType File -Force | Out-Null
+    }
+
+    # Only append the alias if it's not already in the profile
+    $content = Get-Content $profilePath -Raw -ErrorAction SilentlyContinue
+    if ($content -notmatch [regex]::Escape($aliasLine)) {
+        Add-Content -Path $profilePath -Value $aliasLine
+    }
+}
+
 # End
 Write-Host "All done!" -ForegroundColor Green
