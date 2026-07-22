@@ -19,7 +19,7 @@
         Write-Host "$binPath is already in PATH"
     }
 
-## Optional: Setup Git Authentication
+## Optional: Setup Git
 
 Step A:
 
