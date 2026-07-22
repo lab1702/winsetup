@@ -76,7 +76,6 @@ $packages = @{
     "Editors" = @(
         "microsoft.visualstudiocode",
         "neovim.neovim",
-        "helix.helix",
         "thedocumentfoundation.libreoffice"
     )
     "Command Line Tools" = @(
@@ -100,8 +99,7 @@ $packages = @{
     )
     "R Language" = @(
         "rproject.r",
-        "rproject.rtools",
-        "posit.rstudio"
+        "rproject.rtools"
     )
     "Python Language" = @(
         "9NQ7512CXL7T"
