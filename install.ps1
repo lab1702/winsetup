@@ -70,9 +70,6 @@ if ($WhatIfPreference) {
 
 # Define all packages to install
 $packages = @{
-    "AI Tools" = @(
-        "anthropic.claude"
-    )
     "Editors" = @(
         "microsoft.visualstudiocode",
         "neovim.neovim",
