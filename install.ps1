@@ -181,5 +181,8 @@ foreach ($profilePath in $profilePaths) {
     }
 }
 
+# Prevent global pip install
+setx PIP_REQUIRE_VIRTUALENV 1
+
 # End
 Write-Host "All done!" -ForegroundColor Green
