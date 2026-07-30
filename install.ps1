@@ -182,7 +182,7 @@ foreach ($profilePath in $profilePaths) {
 }
 
 # Prevent global pip install
-Write-Host "Preventing pip installs outside virtuale environments..."
+Write-Host "Preventing pip installs outside virtual environments..."
 setx PIP_REQUIRE_VIRTUALENV 1
 
 # End
