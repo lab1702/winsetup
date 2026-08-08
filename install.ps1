@@ -98,7 +98,10 @@ $packages = @{
         "rproject.rtools"
     )
     "Python Language" = @(
-        "9NQ7512CXL7T"
+        "9NQ7512CXL7T",
+        "astral-sh.uv",
+        "astral-sh.ruff",
+        "astral-sh.ty"
     )
     "Julia Language" = @(
         "9NJNWW8PVKMN"
