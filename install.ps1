@@ -80,6 +80,7 @@ $packages = @{
         "microsoft.coreutils"
         "git.git",
         "github.cli",
+        "caddyserver.caddy",
         "kitware.cmake",
         "junegunn.fzf",
         "burntsushi.ripgrep.msvc",
