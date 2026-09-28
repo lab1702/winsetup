@@ -93,7 +93,8 @@ $packages = @{
         "autohotkey.autohotkey"
     )
     "C/C++ Language" = @(
-        "microsoft.visualstudio.buildtools"
+        "microsoft.visualstudio.buildtools",
+        "brechtsanders.winlibs.posix.ucrt"
     )
     "R Language" = @(
         "rproject.r",
