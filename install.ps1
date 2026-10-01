@@ -73,7 +73,8 @@ $packages = @{
     "Editors" = @(
         "microsoft.visualstudiocode",
         "neovim.neovim",
-        "helix.helix"
+        "helix.helix",
+        "blenderfoundation.blender"
     )
     "Command Line Tools" = @(
         "microsoft.powershell",
