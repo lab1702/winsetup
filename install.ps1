@@ -85,6 +85,7 @@ $packages = @{
         "kitware.cmake",
         "junegunn.fzf",
         "burntsushi.ripgrep.msvc",
+        "sharkdp.fd",
         "waterlan.dos2unix",
         "jqlang.jq",
         "sqlite.sqlite",
