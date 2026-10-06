@@ -88,6 +88,7 @@ $packages = @{
         "sharkdp.fd",
         "waterlan.dos2unix",
         "jqlang.jq",
+        "gyan.ffmpeg",
         "sqlite.sqlite",
         "duckdb.cli"
     )
