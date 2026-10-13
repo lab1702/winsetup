@@ -71,6 +71,7 @@ if ($WhatIfPreference) {
 # Define all packages to install
 $packages = @{
     "Editors" = @(
+        "devcom.jetbrainsmononerdfont",
         "microsoft.visualstudiocode",
         "neovim.neovim",
         "helix.helix",
