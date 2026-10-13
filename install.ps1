@@ -90,7 +90,8 @@ $packages = @{
         "jqlang.jq",
         "gyan.ffmpeg",
         "sqlite.sqlite",
-        "duckdb.cli"
+        "duckdb.cli",
+        "starship.starship"
     )
     "System Tools" = @(
         "autohotkey.autohotkey"
