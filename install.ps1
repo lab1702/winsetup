@@ -75,7 +75,8 @@ $packages = @{
         "microsoft.visualstudiocode",
         "neovim.neovim",
         "helix.helix",
-        "blenderfoundation.blender"
+        "blenderfoundation.blender",
+        "godotengine.godotengine"
     )
     "Command Line Tools" = @(
         "microsoft.powershell",
