@@ -113,6 +113,9 @@ $packages = @{
         "astral-sh.ruff",
         "astral-sh.ty"
     )
+    "Lua Language" = @(
+        "devcom.luajit"
+    )
     "Julia Language" = @(
         "9NJNWW8PVKMN"
     )
