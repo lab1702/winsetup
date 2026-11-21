@@ -97,9 +97,6 @@ $packages = [ordered]@{
         "duckdb.cli",
         "starship.starship"
     )
-    "System Tools" = @(
-        "autohotkey.autohotkey"
-    )
     "C/C++ Language" = @(
         "microsoft.visualstudio.buildtools",
         "brechtsanders.winlibs.posix.ucrt"
