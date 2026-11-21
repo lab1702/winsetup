@@ -245,7 +245,12 @@ if (@($packages.Values | ForEach-Object { $_ }) -contains $buildToolsId -and (Te
             # setup.exe asks for elevation itself; Start-Process -Wait waits for it to finish
             $setupArgs = "modify --installPath `"$buildToolsPath`" --add $vcTools --includeRecommended --passive --norestart"
             try {
-                $setup = Start-Process -FilePath (Join-Path $vsInstallerDir 'setup.exe') -ArgumentList $setupArgs -Wait -PassThru -ErrorAction Stop
+                # Under -Confirm, PowerShell 7's Start-Process would ask again (and return nothing if
+                # declined); this was already confirmed above. Windows PowerShell's has no -Confirm.
+                $setup = & {
+                    $ConfirmPreference = 'None'
+                    Start-Process -FilePath (Join-Path $vsInstallerDir 'setup.exe') -ArgumentList $setupArgs -Wait -PassThru -ErrorAction Stop
+                }
                 switch ($setup.ExitCode) {
                     0 { }
                     3010 { $rebootNeeded.Add("$buildToolsId (C++ workload)") }
