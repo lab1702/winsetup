@@ -92,6 +92,7 @@ $packages = [ordered]@{
         "sharkdp.fd",
         "waterlan.dos2unix",
         "jqlang.jq",
+        "mikefarah.yq",
         "gyan.ffmpeg",
         "sqlite.sqlite",
         "duckdb.cli",
