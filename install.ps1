@@ -6,9 +6,10 @@
 .DESCRIPTION
     This script installs and updates the development tools listed in $packages below using the
     Windows Package Manager (winget). Packages that are missing get installed; packages that are
-    already installed get upgraded when winget has a newer version. It also adds a `vi` alias for
-    Neovim to your PowerShell profiles and sets PIP_REQUIRE_VIRTUALENV so pip refuses to install
-    outside a virtual environment.
+    already installed get upgraded when winget has a newer version. Packages whose publisher doesn't
+    let winget upgrade them, such as MiKTeX, are listed at the end for you to update with their own
+    updater. It also adds a `vi` alias for Neovim to your PowerShell profiles and sets
+    PIP_REQUIRE_VIRTUALENV so pip refuses to install outside a virtual environment.
 
 .PARAMETER WhatIf
     Shows what changes would be made without actually making them. Useful for previewing
@@ -176,10 +177,14 @@ function Test-PackageListed {
 $WINGET_UPDATE_NOT_APPLICABLE     = -1978335189  # 0x8A15002B: no applicable upgrade found
 $WINGET_PACKAGE_ALREADY_INSTALLED = -1978335135  # 0x8A150061: already installed
 $WINGET_REBOOT_REQUIRED_TO_FINISH = -1978334967  # 0x8A150109: installed, restart to finish
+# 0x8A150114: the manifest says not to upgrade with winget (UpgradeBehavior: deny, e.g. MiKTeX),
+# though winget upgrade still lists the package when a newer version exists
+$WINGET_UPGRADE_NOT_SUPPORTED     = -1978334956
 
 $failures = [System.Collections.Generic.List[string]]::new()
 $rebootNeeded = [System.Collections.Generic.List[string]]::new()
 $deferred = [System.Collections.Generic.List[string]]::new()
+$manualUpgrade = [System.Collections.Generic.List[string]]::new()
 
 function Register-WingetResult {
     param([string]$PackageId, [string]$Action, [int]$ExitCode)
@@ -188,6 +193,7 @@ function Register-WingetResult {
         $WINGET_UPDATE_NOT_APPLICABLE { }
         $WINGET_PACKAGE_ALREADY_INSTALLED { }
         $WINGET_REBOOT_REQUIRED_TO_FINISH { $rebootNeeded.Add($PackageId) }
+        $WINGET_UPGRADE_NOT_SUPPORTED { $manualUpgrade.Add($PackageId) }
         default { $failures.Add("$PackageId ($Action failed, winget exit code $ExitCode)") }
     }
 }
@@ -346,6 +352,11 @@ if ($deferred.Count -gt 0) {
     Write-Host "`nNot upgraded because this window is running them. To upgrade, close this window and run in a new Command Prompt:" -ForegroundColor Yellow
     # No --exact: it makes the ID match case-sensitive, and these IDs are written in lowercase
     $deferred | ForEach-Object { Write-Host "  winget upgrade --id $_" -ForegroundColor Yellow }
+}
+
+if ($manualUpgrade.Count -gt 0) {
+    Write-Host "`nwinget isn't allowed to upgrade these; update them with their own updater (for MiKTeX, MiKTeX Console):" -ForegroundColor Yellow
+    $manualUpgrade | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
 }
 
 if ($rebootNeeded.Count -gt 0) {
