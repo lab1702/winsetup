@@ -1,7 +1,8 @@
-# Fixing httpgd in VS Code's R extension on Windows with OneDrive
+# Fixing httpgd in VS Code's R extension 2.x with R 4.6 or later on Windows
 
 > **This guide is for vscode-R 2.x only.** vscode-R 3.0.0 (September 2026)
-> rewrote the session watcher around its `sess` package. It no longer uses
+> rewrote the session watcher around its `sess` package and works with R 4.6,
+> so updating the extension is the simplest fix. 3.x no longer uses
 > `%USERPROFILE%\.vscode-R\init.R` or the `vsc.*` R options, and
 > `r.plot.useHttpgd` became `r.plot.backend`, so the root cause and the
 > workaround below don't apply to it. If you used this workaround and then upgraded to
@@ -9,9 +10,9 @@
 > `%USERPROFILE%\.vscode-R` folder.
 
 If you've enabled httpgd for graphics in the VS Code R extension
-(`reditorsupport.r`) but plots still open in a **separate `windows()` device**
-instead of the httpgd viewer tab, and your **Documents folder is managed by
-OneDrive**, this guide is for you.
+(`reditorsupport.r`) 2.x but plots still open in a **separate `windows()` device**
+instead of the httpgd viewer tab, and you use **R 4.6 or later**, this guide is
+for you.
 
 ## Symptoms
 
@@ -23,22 +24,19 @@ OneDrive**, this guide is for you.
 
 ## Root cause
 
-There are two layers:
+vscode-R 2.x defers its real work (sourcing its session script, attaching the
+`tools:vscode` environment, and registering the httpgd graphics device) until R
+has loaded its default packages. To do that, its init script, which runs while R
+reads its startup profile, installs a hook as a **global-environment
+`.First.sys`** function, counting on R's startup to call it instead of base R's
+own `.First.sys`.
 
-1. **OneDrive "Known Folder Move" redirects your Documents folder.** As a result,
-   R resolves `~` (its home directory) to something like
-   `C:\Users\<you>\OneDrive\Documents`, while the VS Code R extension writes its
-   session-watcher files to your real user profile,
-   `%USERPROFILE%\.vscode-R` (i.e. `C:\Users\<you>\.vscode-R`). The extension's
-   automatic session initialization can't find its own files, so it never runs.
-
-2. **The documented manual fallback doesn't fully fire.** vscode-R's init defers
-   its real work (sourcing its session script, attaching the `tools:vscode`
-   environment, and registering the httpgd graphics device) by installing a hook
-   as a **global-environment `.First.sys`** function. R only invokes that
-   global-env override when the init is loaded via the extension's own
-   `R_PROFILE_USER` mechanism — **not** when you load it from your `~/.Rprofile`.
-   So even after sourcing the init manually, the hook sits there, never called.
+R 4.5 and earlier evaluated that `.First.sys()` call in the global environment,
+so the hook took precedence and ran. **Starting with R 4.6.0, R calls the base
+package's `.First.sys` instead**, so the hook is installed but never called, and
+the session features never load. This happens however the init script is
+loaded, and wherever your home or Documents folder is (see vscode-R issue
+[#1696](https://github.com/REditorSupport/vscode-R/issues/1696)).
 
 ## The fix
 
@@ -57,23 +55,23 @@ The script does four things:
    during early startup.
 2. Pre-sets `vsc.use_httpgd = TRUE` (vscode-R won't override an option you've
    already set, so this guarantees the httpgd device is chosen).
-3. Sources the extension's watcher init from `%USERPROFILE%\.vscode-R\init.R`
-   (the correct location, regardless of where `~` points).
-4. **Explicitly invokes** the deferred `.First.sys` hook, since R won't fire it
-   for us.
+3. Sources the extension's watcher init from `%USERPROFILE%\.vscode-R\init.R`,
+   where vscode-R 2.x writes it (this works even if R's `~` points elsewhere,
+   such as a OneDrive-redirected Documents folder).
+4. **Explicitly invokes** the deferred `.First.sys` hook, since R 4.6 and later
+   won't call it.
 
 ```r
-# vscode-R session watcher loader (OneDrive "Known Folder Move" workaround).
+# vscode-R 2.x session watcher loader (workaround for R 4.6 and later).
 #
 # Background:
-#  * OneDrive redirects Documents, so R's "~" is OneDrive\Documents while vscode-R
-#    writes its watcher files to %USERPROFILE%\.vscode-R -- so the extension's
-#    automatic init never loads. We load it explicitly here.
-#  * vscode-R's init defers its real work (sourcing its session script, attaching
-#    tools:vscode, registering the httpgd device) by installing init_last as a
-#    global-env .First.sys hook. When loaded from ~/.Rprofile (rather than the
-#    extension's R_PROFILE_USER), R does NOT invoke that override, so the hook is
-#    installed but never fires. We therefore call it ourselves after sourcing.
+#  * vscode-R 2.x's init defers its real work (sourcing its session script,
+#    attaching tools:vscode, registering the httpgd device) by installing
+#    init_last as a global-env .First.sys hook. Since R 4.6.0, R's startup calls
+#    base R's .First.sys instead, so the hook is installed but never fires. We
+#    therefore source the init here and call the hook ourselves.
+#  * The init is read from %USERPROFILE%\.vscode-R, where vscode-R writes it,
+#    even if R's "~" points elsewhere (e.g. a OneDrive-redirected Documents).
 #  * We pre-set vsc.use_httpgd = TRUE; vsc.R won't override an option the user
 #    already set, guaranteeing the httpgd device is selected.
 if (interactive() && Sys.getenv("TERM_PROGRAM") == "vscode") {
@@ -92,8 +90,8 @@ if (interactive() && Sys.getenv("TERM_PROGRAM") == "vscode") {
       # when init.R was left behind by vscode-R 2.x after an upgrade to 3.x.
       tryCatch({
         source(vscr_init)  # installs init_last as a global-env .First.sys hook
-        # The global-env .First.sys override does not auto-fire when loaded from
-        # ~/.Rprofile, so run it now to complete vscode-R initialization.
+        # R 4.6 and later don't call the global-env .First.sys override, so run
+        # it now to complete vscode-R initialization.
         # inherits = FALSE: don't pick up base::.First.sys if vscode-R installed no hook
         if (exists(".First.sys", envir = globalenv(), inherits = FALSE)) {
           hook <- get(".First.sys", envir = globalenv(), inherits = FALSE)
@@ -133,16 +131,9 @@ plot(1:10)                     # should appear in the httpgd viewer tab
 
 If all three look right, you're done.
 
-## Cleaner permanent alternative
+## Permanent fix
 
-Instead of the `.Rprofile` workaround, you can fix the underlying mismatch by
-making R's home agree with the extension. Set a **Windows user environment
-variable** `R_USER` to `%USERPROFILE%`:
-
-1. Start menu → "Edit environment variables for your account".
-2. Add a new user variable: name `R_USER`, value `%USERPROFILE%`
-   (or the literal expanded path, e.g. `C:\Users\<you>`).
-3. Restart VS Code.
-
-With this set, R's `~` matches `%USERPROFILE%`, the extension's automatic init
-works on its own, and the `.Rprofile` above is no longer needed.
+Update the extension to vscode-R 3.0.0 or later, which no longer depends on
+`.First.sys`. Then remove the `.Rprofile` block and the leftover
+`%USERPROFILE%\.vscode-R` folder, and set `r.plot.backend` instead of
+`r.plot.useHttpgd`.
