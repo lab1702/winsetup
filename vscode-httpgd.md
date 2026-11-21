@@ -1,5 +1,13 @@
 # Fixing httpgd in VS Code's R extension on Windows with OneDrive
 
+> **This guide is for vscode-R 2.x only.** vscode-R 3.0.0 (September 2026)
+> rewrote the session watcher around its `sess` package. It no longer uses
+> `%USERPROFILE%\.vscode-R\init.R` or the `vsc.*` R options, and
+> `r.plot.useHttpgd` became `r.plot.backend`, so the root cause and the
+> workaround below don't apply to it. If you used this workaround and then upgraded to
+> 3.x, remove the block from your `.Rprofile` and delete the leftover
+> `%USERPROFILE%\.vscode-R` folder.
+
 If you've enabled httpgd for graphics in the VS Code R extension
 (`reditorsupport.r`) but plots still open in a **separate `windows()` device**
 instead of the httpgd viewer tab, and your **Documents folder is managed by
@@ -80,15 +88,19 @@ if (interactive() && Sys.getenv("TERM_PROGRAM") == "vscode") {
         .libPaths(c(ulib, .libPaths()))
       }
       options(vsc.use_httpgd = TRUE)
-      source(vscr_init)  # installs init_last as a global-env .First.sys hook
-      # The global-env .First.sys override does not auto-fire when loaded from
-      # ~/.Rprofile, so run it now to complete vscode-R initialization.
-      # inherits = FALSE: don't pick up base::.First.sys if vscode-R installed no hook
-      if (exists(".First.sys", envir = globalenv(), inherits = FALSE)) {
-        hook <- get(".First.sys", envir = globalenv(), inherits = FALSE)
-        tryCatch(hook(), error = function(e)
-          message("[.Rprofile] vscode-R init failed: ", conditionMessage(e)))
-      }
+      # tryCatch: an error here would stop the rest of R's startup profile, e.g.
+      # when init.R was left behind by vscode-R 2.x after an upgrade to 3.x.
+      tryCatch({
+        source(vscr_init)  # installs init_last as a global-env .First.sys hook
+        # The global-env .First.sys override does not auto-fire when loaded from
+        # ~/.Rprofile, so run it now to complete vscode-R initialization.
+        # inherits = FALSE: don't pick up base::.First.sys if vscode-R installed no hook
+        if (exists(".First.sys", envir = globalenv(), inherits = FALSE)) {
+          hook <- get(".First.sys", envir = globalenv(), inherits = FALSE)
+          hook()
+        }
+      }, error = function(e)
+        message("[.Rprofile] vscode-R init failed: ", conditionMessage(e)))
     }
   })
 }
@@ -105,7 +117,8 @@ if (interactive() && Sys.getenv("TERM_PROGRAM") == "vscode") {
   session features won't load.
 - The `.Rprofile` is guarded (`interactive()`, `TERM_PROGRAM == "vscode"`, and a
   `file.exists()` check), so it's a no-op outside a vscode-R session and safe to
-  keep even on machines without the extension. Note that if your `.Rprofile`
+  keep even on machines without the extension. After upgrading to vscode-R 3.x,
+  remove it as described at the top of this guide. Note that if your `.Rprofile`
   lives under OneDrive it will sync to your other machines.
 
 ## Verify
