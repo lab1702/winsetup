@@ -11,7 +11,8 @@
     software components), so INFs that matched nothing are checked again after the others have
     been installed. INFs that still match no device are left alone, so the driver store doesn't
     fill up with packages for hardware this PC doesn't have. Primitive driver packages (no
-    device list, only a [DefaultInstall] section) are installed without a device. Results are
+    device list, only a [DefaultInstall] section decorated for this PC's architecture, such as
+    [DefaultInstall.NTamd64]) are installed without a device. Results are
     taken from pnputil's exit codes, so they don't depend on the Windows display language.
 .PARAMETER DriverPath
     The root path containing driver folders (default: script directory)
@@ -124,12 +125,14 @@ function Get-InfHardwareId {
         if ($parts.Count -eq 0) { continue }
         $modelsName = $parts[0]
 
-        # Windows only uses the undecorated models section on x86; elsewhere it needs a
-        # decoration for the architecture (NTamd64...) or one without any (NT, NT.10.0...)
+        # On x86, Windows also uses the undecorated models section and decorations without an
+        # architecture (NT, NT.10.0...). Elsewhere the decoration must name the architecture
+        # (NTamd64, NTamd64.10.0...); sections without one are for x86 only.
         $modelSections = @()
         if ($infArch -eq 'x86') { $modelSections += $modelsName }
+        $decoration = if ($infArch -eq 'x86') { '^NT(x86)?(\.|$)' } else { "^NT$infArch(\.|$)" }
         $modelSections += @($parts | Select-Object -Skip 1 |
-            Where-Object { $_ -match "^NT($infArch)?(\.|$)" } |
+            Where-Object { $_ -match $decoration } |
             ForEach-Object { "$modelsName.$_" })
 
         foreach ($name in $modelSections) {
@@ -145,16 +148,26 @@ function Get-InfHardwareId {
     }
 }
 
-# Returns $true for a primitive driver package: no device list, just a [DefaultInstall]
-# section for this architecture, which pnputil runs without a device. An INF without a
-# catalog file can't go into the driver store, so it isn't a driver package.
+# Returns $true for a primitive driver package, which pnputil installs without a device.
+# As "Creating a Primitive Driver" in the Windows driver docs requires, that is an INF with
+# no [Manufacturer] section, a [DefaultInstall] section decorated for this architecture
+# (e.g. [DefaultInstall.NTamd64]) and no undecorated one, no [DefaultUninstall] section unless
+# it is decorated and sets LegacyUninstall=1, and Provider, Class and ClassGuid in [Version].
+# Other [DefaultInstall] INFs are legacy setup scripts that pnputil doesn't install. An INF
+# without a catalog file can't go into the driver store, so it isn't a driver package.
 function Test-PrimitiveInf {
     param([hashtable]$Sections)
 
     if ($Sections.ContainsKey('Manufacturer')) { return $false }
-    $hasDefaultInstall = @($Sections.Keys | Where-Object { $_ -match "^DefaultInstall(\.NT($infArch)?)?$" }).Count -gt 0
-    $hasCatalog = @($Sections['Version'] | Where-Object { $_ -match '^CatalogFile(\.[^=]*)?\s*=' }).Count -gt 0
-    $hasDefaultInstall -and $hasCatalog
+    if (-not $Sections.ContainsKey("DefaultInstall.NT$infArch")) { return $false }
+    if ($Sections.ContainsKey('DefaultInstall') -or $Sections.ContainsKey('DefaultUninstall')) { return $false }
+    $uninstall = "DefaultUninstall.NT$infArch"
+    if ($Sections.ContainsKey($uninstall) -and -not ($Sections[$uninstall] -match '^LegacyUninstall\s*=\s*1$')) { return $false }
+    $version = @($Sections['Version'])
+    foreach ($directive in 'CatalogFile(\.[^=]*)?', 'Provider', 'Class', 'ClassGuid') {
+        if (-not ($version -match "^$directive\s*=\s*\S")) { return $false }
+    }
+    $true
 }
 
 # Returns the hardware and compatible IDs of every device currently present in this PC
@@ -268,7 +281,7 @@ foreach ($inf in $infFiles) {
 
     if ($infIds.Count -eq 0) {
         if (Test-PrimitiveInf -Sections $sections) {
-            Write-Log "Primitive driver package (no device list, only [DefaultInstall]); installing it without a device"
+            Write-Log "Primitive driver package (no device list, only [DefaultInstall.NT$infArch]); installing it without a device"
             if (Install-Inf $inf) {
                 $installedSinceCheck = $true
                 $deviceIds = Get-DeviceIdSet

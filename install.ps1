@@ -150,6 +150,13 @@ $installArgs = @{
     )
 }
 
+# Extra winget arguments for upgrades. --custom adds to the installer switches winget already uses.
+$upgradeArgs = @{
+    # winget upgrades Build Tools with "--passive ... update", which restarts the PC right away
+    # if the update needs a restart; --norestart delays that, as for the first install above.
+    "microsoft.visualstudio.buildtools" = @("--custom", "--norestart")
+}
+
 # Upgrading the program this script runs in would close it partway through, so those
 # upgrades are left for the user to run from another window
 $runningHost = @{
@@ -207,8 +214,9 @@ foreach ($category in $packages.Keys) {
                 Write-Host "  [SKIP] $packageId has an upgrade, but upgrading it now would close this window" -ForegroundColor Yellow
                 $deferred.Add($packageId)
             } elseif (-not $PSCmdlet -or $PSCmdlet.ShouldProcess($packageId, "Upgrade package")) {
+                $extraArgs = if ($upgradeArgs.Contains($packageId)) { $upgradeArgs[$packageId] } else { @() }
                 Write-Host "  - Upgrading $packageId..." -ForegroundColor Yellow
-                winget upgrade $packageId --accept-package-agreements --accept-source-agreements
+                winget upgrade $packageId --accept-package-agreements --accept-source-agreements $extraArgs
                 Register-WingetResult $packageId "upgrade" $LASTEXITCODE
             }
         } elseif (-not $PSCmdlet -or $PSCmdlet.ShouldProcess($packageId, "Install package")) {
