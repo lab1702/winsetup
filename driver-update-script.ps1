@@ -5,7 +5,8 @@
     Scans driver folders and installs the drivers that match devices in this PC (Windows 10/11)
 .DESCRIPTION
     This script recursively searches through driver folders for .inf files. Each INF's hardware
-    IDs are compared with the hardware and compatible IDs of the devices present in this PC, and
+    IDs (from the device list Windows would use for this PC's architecture and Windows version)
+    are compared with the hardware and compatible IDs of the devices present in this PC, and
     only INFs that match a device are added to the driver store and installed with
     "pnputil /add-driver <inf> /install". Installing a driver can bring up new devices (such as
     software components), so INFs that matched nothing are checked again after the others have
@@ -65,6 +66,50 @@ $infArch = switch ([System.Runtime.InteropServices.RuntimeInformation]::OSArchit
     default { $_.ToLower() }
 }
 
+# Windows version, product type (1 workstation, 2 domain controller, 3 server) and suite mask
+# of this PC, which INF model section decorations such as NTamd64.10.0...22000 can target
+$os = Get-CimInstance -ClassName Win32_OperatingSystem
+$osVersion = [version]$os.Version
+$osProductType = [int]$os.ProductType
+$osSuiteMask = [int]$os.SuiteMask
+
+# Returns the name of the models section Windows uses for a [Manufacturer] entry on this PC,
+# or nothing if none applies. A decoration is NT[Arch][.Major[.Minor[.ProductType[.SuiteMask
+# [.BuildNumber]]]]]. It applies when it names this architecture (optional on x86 only), its
+# Windows version isn't newer than this PC's (the build only counts when major.minor is the
+# same), and its product type and suites match. Of those, Windows uses the one with the
+# highest version, then the most specific product type and suites; an INF can exclude a
+# Windows version with an empty section for it. On x86 the undecorated section is the fallback.
+function Select-InfModelsSection {
+    param([string]$ModelsName, [string[]]$Decorations)
+
+    $arch = if ($infArch -eq 'x86') { '(x86)?' } else { [regex]::Escape($infArch) }
+    $number = '(0x[0-9a-f]+|\d*)'
+    $pattern = "^NT$arch(\.(?<major>\d*)(\.(?<minor>\d*)(\.(?<type>$number)(\.(?<suite>$number)(\.(?<build>\d*))?)?)?)?)?`$"
+    $osRelease = [version]::new($osVersion.Major, $osVersion.Minor)
+
+    $best = $null
+    foreach ($decoration in $Decorations) {
+        if (-not ($decoration -match $pattern)) { continue }
+        $release = [version]::new([int]$Matches['major'], [int]$Matches['minor'])
+        $build = [int]$Matches['build']
+        $type = [int]$Matches['type']
+        $suite = [int]$Matches['suite']
+
+        if ($release -gt $osRelease -or ($release -eq $osRelease -and $build -gt $osVersion.Build)) { continue }
+        if ($type -and $type -ne $osProductType) { continue }
+        if (($osSuiteMask -band $suite) -ne $suite) { continue }
+
+        $rank = [version]::new($release.Major, $release.Minor, $build)
+        $specificity = [int][bool]$type + [int][bool]$suite
+        if (-not $best -or $rank -gt $best.Rank -or ($rank -eq $best.Rank -and $specificity -gt $best.Specificity)) {
+            $best = @{ Name = "$ModelsName.$decoration"; Rank = $rank; Specificity = $specificity }
+        }
+    }
+
+    if ($best) { $best.Name } elseif ($infArch -eq 'x86') { $ModelsName }
+}
+
 # Reads an INF into a hashtable of section name -> lines, dropping comments and joining "\"
 # continuation lines. Section names are case-insensitive, like PowerShell hashtable keys.
 function Read-InfSection {
@@ -93,8 +138,8 @@ function Read-InfSection {
     $sections
 }
 
-# Returns the hardware and compatible IDs that an INF's model sections list for this
-# architecture. An INF without a [Manufacturer] section (e.g. autorun.inf) returns nothing.
+# Returns the hardware and compatible IDs that an INF lists in the models sections Windows
+# uses on this PC. An INF without a [Manufacturer] section (e.g. autorun.inf) returns nothing.
 function Get-InfHardwareId {
     param([hashtable]$Sections)
 
@@ -123,27 +168,15 @@ function Get-InfHardwareId {
         $value = if ($entry -match '=') { ($entry -split '=', 2)[1] } else { $entry }
         $parts = @($value -split ',' | ForEach-Object { $_.Trim().Trim('"') } | Where-Object { $_ })
         if ($parts.Count -eq 0) { continue }
-        $modelsName = $parts[0]
 
-        # On x86, Windows also uses the undecorated models section and decorations without an
-        # architecture (NT, NT.10.0...). Elsewhere the decoration must name the architecture
-        # (NTamd64, NTamd64.10.0...); sections without one are for x86 only.
-        $modelSections = @()
-        if ($infArch -eq 'x86') { $modelSections += $modelsName }
-        $decoration = if ($infArch -eq 'x86') { '^NT(x86)?(\.|$)' } else { "^NT$infArch(\.|$)" }
-        $modelSections += @($parts | Select-Object -Skip 1 |
-            Where-Object { $_ -match $decoration } |
-            ForEach-Object { "$modelsName.$_" })
-
-        foreach ($name in $modelSections) {
-            if (-not $Sections.ContainsKey($name)) { continue }
-            foreach ($model in $Sections[$name]) {
-                # DeviceDescription = InstallSection, HardwareId [, CompatibleId ...]
-                if ($model -notmatch '=') { continue }
-                ($model -split '=', 2)[1] -split ',' | Select-Object -Skip 1 |
-                    ForEach-Object { [regex]::Replace($_.Trim().Trim('"'), '%([^%]*)%', $expandStrings) } |
-                    Where-Object { $_ }
-            }
+        $name = Select-InfModelsSection -ModelsName $parts[0] -Decorations @($parts | Select-Object -Skip 1)
+        if (-not $name -or -not $Sections.ContainsKey($name)) { continue }
+        foreach ($model in $Sections[$name]) {
+            # DeviceDescription = InstallSection, HardwareId [, CompatibleId ...]
+            if ($model -notmatch '=') { continue }
+            ($model -split '=', 2)[1] -split ',' | Select-Object -Skip 1 |
+                ForEach-Object { [regex]::Replace($_.Trim().Trim('"'), '%([^%]*)%', $expandStrings) } |
+                Where-Object { $_ }
         }
     }
 }
@@ -287,9 +320,9 @@ foreach ($inf in $infFiles) {
                 $deviceIds = Get-DeviceIdSet
             }
         } else {
-            Write-Log "No hardware IDs for this architecture ($infArch) in this INF; skipping" "WARNING"
+            Write-Log "No hardware IDs for this architecture ($infArch) and Windows version ($osVersion) in this INF; skipping" "WARNING"
             $skipped++
-            $results.Add("  [Skipped]   $($inf.FullName) (no hardware IDs for $infArch)")
+            $results.Add("  [Skipped]   $($inf.FullName) (no hardware IDs for $infArch, Windows $osVersion)")
         }
         continue
     }
@@ -372,11 +405,17 @@ if ($rebootRequired) {
     Write-Log ""
     Write-Log "IMPORTANT: Some drivers need a system restart to finish installing." "WARNING"
 
-    $restart = Read-Host "Would you like to restart now? (Y/N)"
-    if ($restart -eq 'Y') {
-        Write-Log "Initiating system restart in 10 seconds..."
-        Start-Sleep -Seconds 10
-        Restart-Computer
+    # With no user to answer (e.g. a scheduled task that runs whether or not anyone is signed
+    # in), Read-Host would wait forever and the caller would never get the exit code
+    if ([Environment]::UserInteractive) {
+        $restart = Read-Host "Would you like to restart now? (Y/N)"
+        if ($restart -eq 'Y') {
+            Write-Log "Initiating system restart in 10 seconds..."
+            Start-Sleep -Seconds 10
+            Restart-Computer
+        }
+    } else {
+        Write-Log "Restart this PC to finish installing them." "WARNING"
     }
 }
 

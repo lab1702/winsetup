@@ -339,7 +339,8 @@ if ([Environment]::GetEnvironmentVariable('PIP_REQUIRE_VIRTUALENV', 'User') -eq 
 # End
 if ($deferred.Count -gt 0) {
     Write-Host "`nNot upgraded because this window is running them. To upgrade, close this window and run in a new Command Prompt:" -ForegroundColor Yellow
-    $deferred | ForEach-Object { Write-Host "  winget upgrade --id $_ --exact" -ForegroundColor Yellow }
+    # No --exact: it makes the ID match case-sensitive, and these IDs are written in lowercase
+    $deferred | ForEach-Object { Write-Host "  winget upgrade --id $_" -ForegroundColor Yellow }
 }
 
 if ($rebootNeeded.Count -gt 0) {
