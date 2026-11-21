@@ -67,8 +67,9 @@ Get-ChildItem -path 'HKCU:\Control Panel\NotifyIconSettings' -Recurse | ForEach-
 
 ## Optional: Reset Windows Terminal Settings
 
-Reset color schemes, sessions etc.
+Resets profiles, color schemes and key bindings to the defaults. Your old settings are kept as `settings.json.bak` next to the new file. This is for Windows Terminal from the Microsoft Store; for Windows Terminal Preview, use `Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe` in the path.
 
 ```powershell
-Remove-Item "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Force
+$wtSettings = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+Move-Item -LiteralPath $wtSettings -Destination "$wtSettings.bak" -Force
 ```

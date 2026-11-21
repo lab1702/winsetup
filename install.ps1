@@ -56,6 +56,13 @@
 [CmdletBinding(SupportsShouldProcess)]
 param()
 
+# Without winget nothing below can work, and its missing exit codes would look like success
+if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+    Write-Host "`nwinget was not found. Install or update 'App Installer' from the Microsoft Store, then run this script again." -ForegroundColor Red
+    # Under "irm | iex" there is no script file, and exit would close the window
+    if ($PSCommandPath) { exit 1 } else { return }
+}
+
 # Show mode information
 if ($WhatIfPreference) {
     Write-Host "`n=== DRY RUN MODE ===" -ForegroundColor Yellow
@@ -135,11 +142,19 @@ $packages = [ordered]@{
 # Extra winget arguments for packages whose default install isn't enough (used on first install)
 $installArgs = @{
     # By default winget installs Build Tools with no workloads, i.e. without the MSVC compiler.
-    # --override replaces winget's own installer switches, so --wait/--passive are repeated here.
+    # --override replaces winget's own installer switches, so --wait/--passive are repeated here,
+    # and --norestart stops a passive install from restarting the PC in the middle of this script.
     "microsoft.visualstudio.buildtools" = @(
         "--override",
-        "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+        "--wait --passive --norestart --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     )
+}
+
+# Upgrading the program this script runs in would close it partway through, so those
+# upgrades are left for the user to run from another window
+$runningHost = @{
+    "microsoft.powershell"       = $PSVersionTable.PSEdition -eq 'Core'
+    "microsoft.visualstudiocode" = $env:TERM_PROGRAM -eq 'vscode'
 }
 
 # Returns $true if $PackageId appears as a whole ID in winget's table output, so that
@@ -157,6 +172,7 @@ $WINGET_REBOOT_REQUIRED_TO_FINISH = -1978334967  # 0x8A150109: installed, restar
 
 $failures = [System.Collections.Generic.List[string]]::new()
 $rebootNeeded = [System.Collections.Generic.List[string]]::new()
+$deferred = [System.Collections.Generic.List[string]]::new()
 
 function Register-WingetResult {
     param([string]$PackageId, [string]$Action, [int]$ExitCode)
@@ -172,9 +188,11 @@ function Register-WingetResult {
 # Get list of all installed packages, and of those with an upgrade available
 Write-Host "`nChecking installed packages and available upgrades..." -ForegroundColor Cyan
 $installedPackages = winget list --accept-source-agreements | Out-String
-# Leave out packages winget says need explicit targeting (pinned or self-updating)
-$upgradablePackages = (winget upgrade --accept-source-agreements | Out-String) -split 'require explicit targeting' |
-    Select-Object -First 1
+# Keep only the first table. winget lists packages that need explicit targeting (pinned or
+# self-updating) in a second table, and each table has a "-----" line under its header row.
+# Splitting on those lines rather than on the heading text works in every display language.
+$upgradeTables = (winget upgrade --accept-source-agreements | Out-String) -split '(?m)^-{3,}\s*$'
+$upgradablePackages = if ($upgradeTables.Count -gt 1) { $upgradeTables[1] } else { '' }
 
 # Install missing packages and upgrade installed ones.
 # $PSCmdlet is $null when the script is run with "irm ... | iex"; then there's no -WhatIf/-Confirm.
@@ -185,6 +203,9 @@ foreach ($category in $packages.Keys) {
         if (Test-PackageListed $installedPackages $packageId) {
             if (-not (Test-PackageListed $upgradablePackages $packageId)) {
                 Write-Host "  [OK] $packageId is installed and up to date" -ForegroundColor Green
+            } elseif ($runningHost[$packageId]) {
+                Write-Host "  [SKIP] $packageId has an upgrade, but upgrading it now would close this window" -ForegroundColor Yellow
+                $deferred.Add($packageId)
             } elseif (-not $PSCmdlet -or $PSCmdlet.ShouldProcess($packageId, "Upgrade package")) {
                 Write-Host "  - Upgrading $packageId..." -ForegroundColor Yellow
                 winget upgrade $packageId --accept-package-agreements --accept-source-agreements
@@ -195,6 +216,37 @@ foreach ($category in $packages.Keys) {
             Write-Host "  - Installing $packageId..." -ForegroundColor Yellow
             winget install $packageId --accept-package-agreements --accept-source-agreements $extraArgs
             Register-WingetResult $packageId "install" $LASTEXITCODE
+        }
+    }
+}
+
+# $installArgs only applies to a first install, so Build Tools installed without the C++
+# workload (as versions of this script before 1.3.0 did) never got the MSVC compiler. Add it.
+$buildToolsId = "microsoft.visualstudio.buildtools"
+$vsInstallerDir = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer'
+$vswhere = Join-Path $vsInstallerDir 'vswhere.exe'
+if (@($packages.Values | ForEach-Object { $_ }) -contains $buildToolsId -and (Test-Path -LiteralPath $vswhere)) {
+    $vsProduct = 'Microsoft.VisualStudio.Product.BuildTools'
+    $vcTools = 'Microsoft.VisualStudio.Workload.VCTools'
+    $buildToolsPath = & $vswhere -products $vsProduct -latest -property installationPath | Select-Object -First 1
+    $withVCTools = & $vswhere -products $vsProduct -requires $vcTools -property installationPath
+    if ($buildToolsPath -and -not $withVCTools) {
+        Write-Host "`n=== Adding the C++ workload to Build Tools ===" -ForegroundColor Blue
+        if (-not $PSCmdlet -or $PSCmdlet.ShouldProcess($buildToolsPath, "Add $vcTools")) {
+            Write-Host "  - Adding $vcTools to $buildToolsPath..." -ForegroundColor Yellow
+            # setup.exe asks for elevation itself; Start-Process -Wait waits for it to finish
+            $setupArgs = "modify --installPath `"$buildToolsPath`" --add $vcTools --includeRecommended --passive --norestart"
+            try {
+                $setup = Start-Process -FilePath (Join-Path $vsInstallerDir 'setup.exe') -ArgumentList $setupArgs -Wait -PassThru -ErrorAction Stop
+                switch ($setup.ExitCode) {
+                    0 { }
+                    3010 { $rebootNeeded.Add("$buildToolsId (C++ workload)") }
+                    default { $failures.Add("$buildToolsId (adding the C++ workload failed, exit code $($setup.ExitCode))") }
+                }
+            } catch {
+                # e.g. the elevation prompt was declined
+                $failures.Add("$buildToolsId (adding the C++ workload failed: $($_.Exception.Message))")
+            }
         }
     }
 }
@@ -277,6 +329,11 @@ if ([Environment]::GetEnvironmentVariable('PIP_REQUIRE_VIRTUALENV', 'User') -eq 
 }
 
 # End
+if ($deferred.Count -gt 0) {
+    Write-Host "`nNot upgraded because this window is running them. To upgrade, close this window and run in a new Command Prompt:" -ForegroundColor Yellow
+    $deferred | ForEach-Object { Write-Host "  winget upgrade --id $_ --exact" -ForegroundColor Yellow }
+}
+
 if ($rebootNeeded.Count -gt 0) {
     Write-Host "`nRestart your PC to finish installing: $($rebootNeeded -join ', ')" -ForegroundColor Yellow
 }

@@ -83,8 +83,9 @@ if (interactive() && Sys.getenv("TERM_PROGRAM") == "vscode") {
       source(vscr_init)  # installs init_last as a global-env .First.sys hook
       # The global-env .First.sys override does not auto-fire when loaded from
       # ~/.Rprofile, so run it now to complete vscode-R initialization.
-      if (exists(".First.sys", envir = globalenv())) {
-        hook <- get(".First.sys", envir = globalenv())
+      # inherits = FALSE: don't pick up base::.First.sys if vscode-R installed no hook
+      if (exists(".First.sys", envir = globalenv(), inherits = FALSE)) {
+        hook <- get(".First.sys", envir = globalenv(), inherits = FALSE)
         tryCatch(hook(), error = function(e)
           message("[.Rprofile] vscode-R init failed: ", conditionMessage(e)))
       }
