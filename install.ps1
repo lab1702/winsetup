@@ -150,8 +150,7 @@ $packages = [ordered]@{
     )
     "R Language" = @(
         "rproject.r",
-        "rproject.rtools",
-        "posit.rstudio"
+        "rproject.rtools"
     )
     "Python Language" = @(
         "9NQ7512CXL7T",
