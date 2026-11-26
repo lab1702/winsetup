@@ -36,9 +36,8 @@ git config --global init.defaultBranch main
 
 ## Optional: Reset Windows Terminal Settings
 
-Resets profiles, color schemes and key bindings to the defaults. Your old settings are kept as `settings.json.bak` next to the new file. This is for Windows Terminal from the Microsoft Store; for Windows Terminal Preview, use `Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe` in the path.
+Resets profiles, color schemes and key bindings to the defaults by deleting the settings file. Your old settings are not kept. This is for Windows Terminal from the Microsoft Store; for Windows Terminal Preview, use `Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe` in the path.
 
 ```powershell
-$wtSettings = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-Move-Item -LiteralPath $wtSettings -Destination "$wtSettings.bak" -Force
+Remove-Item -LiteralPath "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 ```
