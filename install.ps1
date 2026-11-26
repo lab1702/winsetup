@@ -4,17 +4,39 @@
     Automated setup script for Windows development workstation with common development tools.
 
 .DESCRIPTION
-    This script installs and updates the development tools listed in $packages below using the
+    This script installs and updates the development tools listed in its $packages table using the
     Windows Package Manager (winget). Packages that are missing get installed; packages that are
-    already installed get upgraded when winget has a newer version. Packages whose publisher doesn't
-    let winget upgrade them, such as MiKTeX, are listed at the end for you to update with their own
-    updater. It also adds a `vi` alias for Neovim to your PowerShell profiles, sets
-    PIP_REQUIRE_VIRTUALENV so pip refuses to install outside a virtual environment, and sets every
-    tray icon to show on the taskbar instead of in the overflow menu.
+    already installed get upgraded when winget has a newer version. It is safe to run again at any
+    time: every step checks the current state first and only changes what is missing or out of
+    date.
+
+    Some packages are handled specially:
+
+    - Visual Studio Build Tools is installed with the C++ workload (the MSVC compiler). If Build
+      Tools is already installed without that workload, the script adds it using the Visual Studio
+      Installer, which asks for administrator rights (a UAC prompt).
+    - PowerShell 7 is not upgraded when the script is running in it, because that would close the
+      window. The command to upgrade it from another window is shown at the end.
+    - Packages whose publisher doesn't let winget upgrade them, such as MiKTeX, are listed at the
+      end for you to update with their own updater.
+
+    After the packages, the script changes these settings for the current user:
+
+    - Adds a `vi` alias for Neovim to your Windows PowerShell and PowerShell 7 profiles. The
+      Windows PowerShell profile is skipped when its execution policy (Restricted or AllSigned)
+      wouldn't load it.
+    - Sets PIP_REQUIRE_VIRTUALENV so pip refuses to install outside a virtual environment.
+    - Sets every tray icon to show on the taskbar instead of in the overflow menu (Windows 11).
+      Windows only lists an icon once its app has shown it, so run the script again later to
+      pick up the icons of newly installed apps.
+
+    The script ends with a summary of upgrades left for you to run, packages that need a restart
+    to finish installing, and anything that failed.
 
 .PARAMETER WhatIf
     Shows what changes would be made without actually making them. Useful for previewing
-    which packages would be installed or updated.
+    which packages would be installed or updated. The script still asks winget what is installed
+    and which upgrades are available.
 
 .PARAMETER Confirm
     Asks before each install, upgrade, or settings change.
@@ -30,6 +52,11 @@
     Shows what packages would be installed/updated without making any actual changes.
 
 .EXAMPLE
+    .\install.ps1 -Confirm
+
+    Asks before each install, upgrade, and settings change, so you can skip individual steps.
+
+.EXAMPLE
     powershell -ExecutionPolicy Bypass -File .\install.ps1
 
     Runs the script bypassing execution policy restrictions (useful if script execution
@@ -40,13 +67,33 @@
 
     Downloads the latest version of the script and runs it in WhatIf mode to preview changes.
 
+.EXAMPLE
+    irm https://raw.githubusercontent.com/lab1702/winsetup/refs/heads/main/install.ps1 | iex
+
+    Downloads the latest version of the script and runs it straight away, without saving it.
+    -WhatIf and -Confirm can't be used this way; download the script to a file first, as in the
+    previous example.
+
+.INPUTS
+    None. You can't pipe objects to this script.
+
+.OUTPUTS
+    None intended for use. Progress and the final summary are written to the host, and winget's
+    own output passes through as text.
+
 .NOTES
     Author: lab1702
     Requires: Windows 10/11 with Windows Package Manager (winget) installed
-    Version: 1.3.0
 
     The packages to install are listed, by category, in the $packages table at the top of the
     script body; edit that table to add or remove tools.
+
+    The script accepts winget's source agreements and each package's license agreement for you.
+
+    It doesn't need to be run as administrator. Installers that need administrator rights ask
+    with a UAC prompt.
+
+    Exit code, when run as a file: 1 if winget is missing or a package step failed, otherwise 0.
 
 .LINK
     https://github.com/lab1702/winsetup
@@ -231,7 +278,7 @@ foreach ($category in $packages.Keys) {
 }
 
 # $installArgs only applies to a first install, so Build Tools installed without the C++
-# workload (as versions of this script before 1.3.0 did) never got the MSVC compiler. Add it.
+# workload (as earlier versions of this script did) never got the MSVC compiler. Add it.
 $buildToolsId = "microsoft.visualstudio.buildtools"
 $vsInstallerDir = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer'
 $vswhere = Join-Path $vsInstallerDir 'vswhere.exe'
