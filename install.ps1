@@ -74,9 +74,7 @@ if ($WhatIfPreference) {
 $packages = [ordered]@{
     "Editors" = @(
         "devcom.jetbrainsmononerdfont",
-        "microsoft.visualstudiocode",
         "neovim.neovim",
-        "helix.helix",
         "blenderfoundation.blender",
         "godotengine.godotengine"
     )
@@ -159,8 +157,7 @@ $upgradeArgs = @{
 # Upgrading the program this script runs in would close it partway through, so those
 # upgrades are left for the user to run from another window
 $runningHost = @{
-    "microsoft.powershell"       = $PSVersionTable.PSEdition -eq 'Core'
-    "microsoft.visualstudiocode" = $env:TERM_PROGRAM -eq 'vscode'
+    "microsoft.powershell" = $PSVersionTable.PSEdition -eq 'Core'
 }
 
 # Returns $true if $PackageId appears as a whole ID in winget's table output, so that
