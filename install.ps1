@@ -8,8 +8,9 @@
     Windows Package Manager (winget). Packages that are missing get installed; packages that are
     already installed get upgraded when winget has a newer version. Packages whose publisher doesn't
     let winget upgrade them, such as MiKTeX, are listed at the end for you to update with their own
-    updater. It also adds a `vi` alias for Neovim to your PowerShell profiles and sets
-    PIP_REQUIRE_VIRTUALENV so pip refuses to install outside a virtual environment.
+    updater. It also adds a `vi` alias for Neovim to your PowerShell profiles, sets
+    PIP_REQUIRE_VIRTUALENV so pip refuses to install outside a virtual environment, and sets every
+    tray icon to show on the taskbar instead of in the overflow menu.
 
 .PARAMETER WhatIf
     Shows what changes would be made without actually making them. Useful for previewing
@@ -341,6 +342,24 @@ if ([Environment]::GetEnvironmentVariable('PIP_REQUIRE_VIRTUALENV', 'User') -eq 
     [Environment]::SetEnvironmentVariable('PIP_REQUIRE_VIRTUALENV', '1', 'User')
     $env:PIP_REQUIRE_VIRTUALENV = '1'
     Write-Host "  Set PIP_REQUIRE_VIRTUALENV=1" -ForegroundColor Yellow
+}
+
+# Show every tray (notification area) icon on the taskbar instead of in the overflow menu.
+# Windows 11 keeps a key per icon here, created the first time an app shows its icon, so the
+# icons of apps installed above are picked up by running this script again once they've started.
+Write-Host "`n=== Showing all tray icons ===" -ForegroundColor Blue
+$trayIconsKey = 'HKCU:\Control Panel\NotifyIconSettings'
+$trayIcons = @(if (Test-Path -LiteralPath $trayIconsKey) { Get-ChildItem -LiteralPath $trayIconsKey })
+$hiddenTrayIcons = @($trayIcons | Where-Object { $_.GetValue('IsPromoted') -ne 1 })
+if ($trayIcons.Count -eq 0) {
+    Write-Host "  No tray icon settings found, nothing to change" -ForegroundColor Yellow
+} elseif ($hiddenTrayIcons.Count -eq 0) {
+    Write-Host "  [OK] All $($trayIcons.Count) tray icon(s) are already set to show" -ForegroundColor Green
+} elseif (-not $PSCmdlet -or $PSCmdlet.ShouldProcess("$($hiddenTrayIcons.Count) tray icon(s)", 'Show on the taskbar')) {
+    foreach ($trayIcon in $hiddenTrayIcons) {
+        Set-ItemProperty -LiteralPath $trayIcon.PSPath -Name 'IsPromoted' -Value 1 -Type DWord -Confirm:$false
+    }
+    Write-Host "  Set $($hiddenTrayIcons.Count) tray icon(s) to show" -ForegroundColor Yellow
 }
 
 # End
